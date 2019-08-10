@@ -1,5 +1,5 @@
-import controller from './controller/controller.js'
-import service from './service/service.js'
+import controller from './controller.js'
+import service from './service.js'
 
 const ctx = () => {
     return {

@@ -1,5 +1,5 @@
-import loadContext from './load-context.js'
-import W from './W.js'
+import loadContext from './lib/load-context.js'
+import W from './lib/W.js'
 
 function start(app) {
     const ctx = loadContext();

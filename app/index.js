@@ -2,7 +2,7 @@ import express from 'express'
 // import multer from 'multer'
 import bodyparser from 'body-parser'
 
-import startApp from './app/start.js'
+import startApp from './start.js'
 
 // express --
 let app = express();

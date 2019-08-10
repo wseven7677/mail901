@@ -4,9 +4,12 @@
   "description": "node email app",
   "main": "index.js",
   "scripts": {
+    "start": "babel-node app/index.js",
     "test": "babel-node test/test.js",
-    "start": "babel-node index.js",
-    "debug": "babel-node --inspect index.js"
+    "debug": "babel-node --inspect app/index.js",
+    "app": "rm -rf dist/app & babel app -d dist/app",
+    "script": "rm -rf dist/script & babel script -d dist/script",
+    "build": "npm run app & npm run script"
   },
   "keywords": [
     "node",
@@ -18,6 +21,7 @@
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "moment": "^2.24.0",
     "multer": "^1.4.2",
     "nodemailer": "^6.3.0"
   },

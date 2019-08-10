@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer'
 import { mailAccount } from '../../config/config.default.js'
+import fs from 'fs'
 
 class Mail {
     async send(ctx, receivers, title, content) {
@@ -14,17 +15,34 @@ class Mail {
                 }
             });
     
-            let info = await transporter.sendMail({
-                from: `"${mailAccount.name}" <${mailAccount.user}>`,
-                to: receivers.join(','), // list of receivers
-                subject: title,
-                // text: "", // plain text body
-                html: content // html body
-            });
+            let info = {};
+            try {
+                info = await transporter.sendMail({
+                    from: `"${mailAccount.name}" <${mailAccount.user}>`,
+                    to: receivers.join(','), // list of receivers
+                    subject: title,
+                    // text: "", // plain text body
+                    html: content // html body
+                });
+            } catch (error) {
+                ctx.response = {
+                    data: error,
+                    msg: '服务器出错',
+                    errno: 1001,
+                };
+                fs.writeFileSync('error.txt', error);
+                return resolve();
+            }
     
-            console.log("Message sent: %s", info.messageId);
+            console.log("Message sent: %s", JSON.stringify(info));
     
-            ctx.response.data = info.messageId;
+            ctx.response = {
+                data: {
+                    accepted: info.accepted,
+                },
+                msg: 'success',
+                errno: 0,
+            };
             resolve();
         });
     }
