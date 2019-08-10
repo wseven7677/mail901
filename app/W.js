@@ -15,7 +15,7 @@ class W {
     }
 
     post(api, cb) {
-        this.app.get(api, (req, res) => {
+        this.app.post(api, (req, res) => {
             this.ctx.request = req;
             cb()
                 .then(() => {

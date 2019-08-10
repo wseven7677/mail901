@@ -10,10 +10,9 @@ function start(app) {
         return ctx.controller.xxx.query(ctx);
     });
 
-    // w.post('/api/post', () => {
-    //     return ctx.controller.xxx.query(ctx);
-    // });
-
+    w.post('/api/send_mail', () => {
+        return ctx.controller.mail.send(ctx);
+    });
 
 }
 
