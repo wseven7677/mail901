@@ -9,7 +9,8 @@
     "debug": "babel-node --inspect app/index.js",
     "app": "rm -rf dist/app & babel app -d dist/app",
     "script": "rm -rf dist/script & babel script -d dist/script",
-    "build": "npm run app & npm run script"
+    "config": "rm -rf dist/config & babel config -d dist/config",
+    "build": "npm run app & npm run script & npm run config"
   },
   "keywords": [
     "node",
@@ -30,3 +31,4 @@
     "babel-preset-env": "^1.7.0"
   }
 }
+
