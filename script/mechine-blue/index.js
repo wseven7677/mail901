@@ -81,17 +81,21 @@ function main() {
     .catch(err => err);
 }
 
-function start() {
+async function start() {
     console.log('start!');
-    schedule.scheduleJob('30 * * * * *', fireTime => {
+    const timeFormat = 'YYYYMMDD-HH:mm:ss';
+
+    schedule.scheduleJob('30 * * * * *', d => {
+        const fireTime = moment(d).format(timeFormat);
+        
         console.log(`开始执行（${fireTime}）：`);
-        const info = main();
+        const info = await main();
         fs.writeFileSync('./log/schedule-log.log', `
             [schedule-log]${fireTime}:
             ${info}
             --- ---
         `, { flag: 'a' });
-        console.log(`执行完毕。`);
+        console.log(`执行完毕。${moment().format(timeFormat)}`);
     });
 }
 
