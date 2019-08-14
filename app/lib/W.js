@@ -1,26 +1,30 @@
+import loadContext from './load-context'
+
 class W {
     constructor(app) {
         this.app = app;
-        this.ctx = app.ctx;
     }
 
     get(api, cb) {
+        const ctx = loadContext();
+
         this.app.get(api, (req, res) => {
-            this.ctx.request = req;
-            cb()
-                .then(() => {
-                    res.send(this.ctx.response);
-                });
+            ctx.request = req;
+            cb(ctx)
+            .then(() => {
+                res.send(ctx.response);
+            });
         });
     }
 
     post(api, cb) {
+        const ctx = loadContext();
         this.app.post(api, (req, res) => {
-            this.ctx.request = req;
-            cb()
-                .then(() => {
-                    res.send(this.ctx.response);
-                });
+            ctx.request = req;
+            cb(ctx)
+            .then(() => {
+                res.send(ctx.response);
+            });
         });
     }
 }

@@ -4,13 +4,14 @@
   "description": "node email app",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node app/index.js",
+    "start": "npm run boot && babel-node app/index.js",
     "test": "babel-node test/test.js",
-    "debug": "babel-node --inspect app/index.js",
-    "bapp": "rm -rf dist/app & babel app -d dist/app",
-    "bscript": "rm -rf dist/script & babel script -d dist/script",
-    "bconfig": "rm -rf dist/config & babel config -d dist/config",
-    "build": "npm run bapp & npm run bscript & npm run bconfig"
+    "debug": "npm run boot && babel-node --inspect app/index.js",
+    "boot": "babel-node app/lib/boot.js",
+    "bapp": "rm -rf dist/app && npm run boot && babel app -d dist/app",
+    "bscript": "rm -rf dist/script && babel script -d dist/script",
+    "bconfig": "rm -rf dist/config && babel config -d dist/config",
+    "build": "npm run bapp && npm run bscript && npm run bconfig"
   },
   "keywords": [
     "node",
