@@ -7,10 +7,10 @@
     "start": "babel-node app/index.js",
     "test": "babel-node test/test.js",
     "debug": "babel-node --inspect app/index.js",
-    "app": "rm -rf dist/app & babel app -d dist/app",
-    "script": "rm -rf dist/script & babel script -d dist/script",
-    "config": "rm -rf dist/config & babel config -d dist/config",
-    "build": "npm run app & npm run script & npm run config"
+    "bapp": "rm -rf dist/app & babel app -d dist/app",
+    "bscript": "rm -rf dist/script & babel script -d dist/script",
+    "bconfig": "rm -rf dist/config & babel config -d dist/config",
+    "build": "npm run bapp & npm run bscript & npm run bconfig"
   },
   "keywords": [
     "node",

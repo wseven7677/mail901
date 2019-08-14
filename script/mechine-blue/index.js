@@ -86,7 +86,7 @@ function start() {
     schedule.scheduleJob('30 * * * * *', fireTime => {
         console.log(`开始执行（${fireTime}）：`);
         const info = main();
-        fs.writeFileSync(__dirname + '/log/schedule-log.log', `
+        fs.writeFileSync('./log/schedule-log.log', `
             [schedule-log]${fireTime}:
             ${info}
             --- ---
