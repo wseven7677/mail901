@@ -1,9 +1,19 @@
 import axios from 'axios'
 import moment from 'moment'
+import schedule from 'node-schedule'
+import fs from 'fs'
 
-import { subs } from '../../config/config.default.js'
+import { subs, gm } from '../../config/config.default.js'
 import { who, things } from './data.js'
 
+const host = 'localhost';
+const port = '8111';
+
+/**
+ * 从数组中随机选择若干个项目返回
+ * @param {Array} arr 数组
+ * @param {Number} num 选取的个数
+ */
 function random(arr, num = 1) {
     const list = [...arr];
     const len = list.length;
@@ -20,40 +30,69 @@ function random(arr, num = 1) {
     }
 };
 
+function sendWarningMsg(msg) {
+    return axios.post(`http://${host}:${port}/api/send_mail`, {
+        receivers: gm,
+        title: '[机蓝报警]机蓝日报发送失败',
+        content: `
+        <h2>机蓝日报发送失败</h2>
+        <p>以下是详情：</p>
+        <p>${msg}</p>
+        `,
+    })
+    .then(res => '[sendWarningMsg]200 OK.')
+    .catch(() => '[sendWarningMsg]errrrrrrror...');
+}
+
 function main() {
-    const receivers = subs;
-    const host = 'localhost';
-    const port = '8111';
     const now = moment();
-    const wholist = random(who, 5);
+    const wholist = random(who, 6);
     
     const contentItem = wholist.map(one => {
         return `
-            <span>${one}在${random(things)}，</span>
+            <span>${one}在${random(things)}</span>
         `;
     });
 
-    axios.post(`http://${host}:${port}/api/send_mail`, {
-        receivers,
+    return axios.post(`http://${host}:${port}/api/send_mail`, {
+        receivers: subs,
         title: `【机蓝日报】season 1 第${now.format('YYYYMMDD')}期`,
         content: `
             <h2>机蓝日报</h2>
-            <p style="font-size: 16px;color: #888;">
-                机蓝功能复健进行中。每天会有指导老师指导机蓝完成一篇观察日报，并发送给订阅用户。如果您对收到该邮件有疑问，请联系九口药。以下是机蓝的观察日报：
-            </p>
             <p style="font-size: 18px;">
-                到发报此时为止，${contentItem}。其他人行踪不明。
+                到发报此时为止，${contentItem.join('，')}。其他人行踪不明。
             </p>
             <p>机蓝本文指导老师：${random(who)}</p>
             <p>出刊时间：${now.format('YYYY-MM-DD HH:mm')}</p>
+            <hr />
+            <p style="font-size: 14px;color: #888;">
+                机蓝功能复健进行中。每天会有指导老师指导机蓝完成一篇观察日报，并发送给订阅用户。如果您对收到该邮件有疑问，请联系九口药。想要订阅该日报，请联系十六口药。
+            </p>
         `,
     })
     .then(res => {
-        console.log(res.data);
+        const data = res.data;
+        if(data.errno !== 0) {
+            sendWarningMsg(data.msg);
+        }
+        console.log(data);
+        return data;
     })
-    .catch(err => {
-        console.log(err);
+    .catch(err => err);
+}
+
+function start() {
+    console.log('start!');
+    schedule.scheduleJob('30 * * * * *', fireTime => {
+        console.log(`开始执行（${fireTime}）：`);
+        const info = main();
+        fs.writeFileSync(__dirname + '/log/schedule-log.log', `
+            [schedule-log]${fireTime}:
+            ${info}
+            --- ---
+        `, { flag: 'a' });
+        console.log(`执行完毕。`);
     });
 }
 
-main();
+start();
