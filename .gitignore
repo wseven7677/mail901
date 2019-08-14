@@ -2,3 +2,6 @@ node_modules
 .vscode
 config
 dist
+
+app/lib/controller.js
+app/lib/service.js
